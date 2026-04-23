@@ -34,7 +34,7 @@ primary:
     max_logical_replication_workers = 4
     max_worker_processes = 8
   persistence:
-      size: 2Gi
+      size: 3Gi
   resourcesPreset: nano
 
 readReplicas:
@@ -52,7 +52,7 @@ readReplicas:
     log_min_duration_statement = 1000
     log_statement = 'all'
   persistence:
-     size: 2Gi
+     size: 3Gi
   resourcesPreset: nano
 
 replication:
