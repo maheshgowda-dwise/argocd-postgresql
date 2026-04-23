@@ -1,0 +1,62 @@
+architecture: replication
+
+global:
+  postgresql:
+    auth:
+      existingSecret: postgresql
+      database: postgres
+      storageClass: gp3
+  imageRegistry: "public.ecr.aws"  # Use ECR Public to avoid Docker Hub rate limits
+
+metrics:
+  enabled: true
+
+primary:
+  extendedConfiguration: |
+    max_connections = 3001
+    shared_preload_libraries = 'pg_stat_statements'
+    pg_stat_statements.track = all
+    log_destination = 'stderr'
+    logging_collector = on
+    log_directory = '/bitnami/postgresql/logs'
+    log_filename = 'postgresql-%Y-%m-%d.log'
+    log_connections = off
+    log_disconnections = off
+    log_min_duration_statement = 1000
+    log_statement = 'all'
+
+    # Network Configuration for logical replication
+    wal_level = logical
+    max_replication_slots = 10
+    max_wal_senders = 10
+    wal_keep_size = 1024
+      # wal_keep_segments = 64   # Uncomment for PostgreSQL < 13
+    max_logical_replication_workers = 4
+    max_worker_processes = 8
+  persistence:
+      size: 2Gi
+  resourcesPreset: nano
+
+readReplicas:
+  replicaCount: 1
+  extendedConfiguration: |
+    max_connections = 3001
+    shared_preload_libraries = 'pg_stat_statements'
+    pg_stat_statements.track = all
+    log_destination = 'stderr'
+    logging_collector = on
+    log_directory = '/bitnami/postgresql/logs'
+    log_filename = 'postgresql-%Y-%m-%d.log'
+    log_connections = off
+    log_disconnections = off
+    log_min_duration_statement = 1000
+    log_statement = 'all'
+  persistence:
+     size: 2Gi
+  resourcesPreset: nano
+
+replication:
+  enabled: true
+  numSynchronousReplicas: 1
+  synchronousCommit: "on"
+
