@@ -5,7 +5,7 @@ global:
     auth:
       existingSecret: postgresql
       database: postgres
-      storageClass: local-path
+      storageClass: gp3
   imageRegistry: "public.ecr.aws"  # Use ECR Public to avoid Docker Hub rate limits
 
 metrics:
@@ -34,7 +34,7 @@ primary:
     max_logical_replication_workers = 4
     max_worker_processes = 8
   persistence:
-      size: 4Gi
+      size: 2Gi
   resourcesPreset: nano
 
 readReplicas:
@@ -52,7 +52,7 @@ readReplicas:
     log_min_duration_statement = 1000
     log_statement = 'all'
   persistence:
-     size: 4Gi
+     size: 2Gi
   resourcesPreset: nano
 
 replication:
